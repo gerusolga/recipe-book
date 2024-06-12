@@ -1,6 +1,7 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {DataStorageService} from "../shared/data-storage.service";
 import {AuthService} from "../auth/auth.service";
+import {Recipe} from "../recipes/recipe.model";
 
 
 @Component({
@@ -8,23 +9,37 @@ import {AuthService} from "../auth/auth.service";
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent  {
-   constructor(private dataStorageService: DataStorageService,
-               private authService: AuthService) {
+export class HeaderComponent implements OnInit {
+  constructor(private dataStorageService: DataStorageService,
+              private authService: AuthService) {
 
-   }
+  }
 
-  onSaveData(){
-    this.dataStorageService.storeRecipes()
-    subscribe(
+  ngOnInit() {
+  }
+
+  onSaveData() {
+    this.dataStorageService.storeRecipes().subscribe(
       (response: Response) => {
         console.log(response);
+      },
+      (error: any) => {
+        console.error(error);
       }
     );
   }
-  onFetchData(){
-   this.dataStorageService.fetchRecipes();
+
+  onFetchData() {
+    this.dataStorageService.fetchRecipes().subscribe(
+      (recipes: Recipe[]) => {
+        console.log(recipes);
+      },
+      (error: any) => {
+        console.error(error);
+      }
+    );
   }
+
   onLogout() {
     this.authService.logout();
   }

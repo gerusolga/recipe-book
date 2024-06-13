@@ -14,6 +14,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RecipeService} from "./recipes/resipe.service";
 import {HttpClientModule} from "@angular/common/http";
 import {ShoppingListModule} from "./shopping-list/shopping-list.module";
+import {SharedModule} from "./shared/shared.module";
 
 @NgModule({
   declarations: [
@@ -32,9 +33,8 @@ import {ShoppingListModule} from "./shopping-list/shopping-list.module";
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    ShoppingListModule
-
-
+    ShoppingListModule,
+    SharedModule
   ],
   providers: [ShoppingListService, RecipeService],
   bootstrap: [AppComponent]

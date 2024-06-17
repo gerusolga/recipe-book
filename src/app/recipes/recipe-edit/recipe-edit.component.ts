@@ -9,7 +9,7 @@ import {RecipeService} from "../resipe.service";
   styleUrl: './recipe-edit.component.css'
 })
 export class RecipeEditComponent implements OnInit {
-  id: number = 0;
+  id: number;
   editMode = false;
   recipeForm: FormGroup;
 
@@ -93,5 +93,9 @@ export class RecipeEditComponent implements OnInit {
       'description': new FormControl(recipeDescription, Validators.required),
       'ingredients': recipeIngredients
     })
+  }
+
+  getControls() {
+    return (<FormArray>this.recipeForm.get('ingredients')).controls;
   }
 }

@@ -5,31 +5,43 @@ import {ShoppingListService} from "../shopping-list/shopping-list.service";
 import {Subject} from "rxjs";
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
+
 export class RecipeService {
   recipeSelected = new Subject<Recipe>();
   recipesChanged = new Subject<Recipe[]>();
 
-  // private recipes: Recipe[] = [
-  //   new Recipe('Chicken Biryani', 'This is simply biryani', 'https://geekrobocook.com/wp-content/uploads/2021/05/Muradabadi-chicken-biryani-1200x900.jpg',
-  //     [new Ingredient('Chicken', 1),
-  //       new Ingredient('Rice', 20),
-  //     ]),
-  //   new Recipe('Chicken noodles', 'This is simply noodlrs', 'https://www.licious.in/blog/wp-content/uploads/2020/12/Sesame-Chicken-Noodles.jpg',
-  //     [new Ingredient('Chicken', 1),
-  //       new Ingredient('Noodles', 20),
-  //     ])
-  // ];
+   private recipes: Recipe[] = [
+    new Recipe('Smoothie', 'Strawberry Banana Smoothie', 'https://img1.russianfood.com/dycontent/images_upl/139/sm_138351.jpg', [
+      new Ingredient('Banana', 1),
+      new Ingredient('Strawberry', 7),
+      new Ingredient('Water', 250),
+    ]),
+    new Recipe('Cookie', 'Cookies "Vzletnoye"', 'https://img1.russianfood.com/dycontent/images_upl/124/sm_123541.jpg', [
+      new Ingredient('Flour', 400),
+      new Ingredient('Sugar', 200),
+      new Ingredient('Butter', 300),
+      new Ingredient('Eggs', 3),
+    ]),
+    new Recipe('Salad', 'Salad with corn, cheese and eggs', 'https://img1.russianfood.com/dycontent/images_upl/348/sm_347474.jpg', [
+      new Ingredient('Canned corn', 300),
+      new Ingredient('Hard cheese', 200),
+      new Ingredient('Eggs', 3),
+      new Ingredient('Mayonnaise', 3),
+    ]),
+  ];
 
-  private recipes: Recipe[] = [];
+  //private recipes: Recipe[] = [];
 
   constructor(private slService: ShoppingListService) {
   }
 
-  setRecipes(recipes: Recipe[]) {
-    this.recipes = recipes;
-    this.recipesChanged.next(this.recipes.slice());
-  }
+  //setRecipes(recipes: Recipe[]) {
+  //this.recipes = recipes;
+  //this.recipesChanged.next(this.recipes.slice());
+  //}
 
   getRecipes() {
     return this.recipes.slice()
@@ -37,10 +49,6 @@ export class RecipeService {
 
   getRecipe(index: number) {
     return this.recipes[index];
-  }
-
-  addIngredientsToList(ingredients: Ingredient[]) {
-    this.slService.addIngredients(ingredients);
   }
 
   addRecipe(recipe: Recipe) {
@@ -56,6 +64,9 @@ export class RecipeService {
   deleteRecipe(index: number) {
     this.recipes.splice(index, 1);
     this.recipesChanged.next(this.recipes.slice());
+  }
+  addIngredientsToList(ingredients: Ingredient[]) {
+    this.slService.addIngredients(ingredients);
   }
 }
 

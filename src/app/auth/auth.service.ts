@@ -6,8 +6,8 @@ import {
   getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  signOut,
-} from 'firebase/auth';
+  signOut} from 'firebase/auth';
+
 import {Injectable} from '@angular/core';
 
 const firebaseConfig = {
@@ -26,6 +26,7 @@ const auth = getAuth(app);
 @Injectable({
   providedIn: 'root'
 })
+
 export class AuthService {
   private token: string | null = null;
 
@@ -34,38 +35,52 @@ export class AuthService {
       if (user) {
         user.getIdToken().then((token) => {
           this.token = token;
+          console.log('User token:', this.token);
+          this.router.navigate(['/recipes']);
         });
       } else {
         this.token = null;
+        console.log('User is not authenticated');
       }
     });
   }
 
   signupUser(email: string, password: string) {
-    return createUserWithEmailAndPassword(auth, email, password);
+    return createUserWithEmailAndPassword(auth, email, password)
+  .then(result => {
+      return result.user.getIdToken().then(token => {
+        this.token = token;
+        console.log('Signup successful, token:', this.token);
+        this.router.navigate(['/recipes']);
+      });
+    })
+      .catch(error => {
+        console.error('Signup error:', error);
+      });
   }
 
   signinUser(email: string, password: string) {
-    return signInWithEmailAndPassword(auth, email, password);
+    return signInWithEmailAndPassword(auth, email, password)
+      .then(result => {
+        return result.user.getIdToken().then(token => {
+          this.token = token;
+          console.log('Signin successful, token:', this.token);
+          this.router.navigate(['/recipes']); // Перенаправление после успешного входа
+        });
+      })
+      .catch(error => {
+        console.error('Signin error:', error);
+      });
   }
 
   logout() {
-    return signOut(auth).then(() => {
+    signOut(auth).then(() => {
+      console.log('Logged out successfully');
       this.token = null;
-      this.router.navigate(['/']);
+      this.router.navigate(['/signin']);
+    }).catch(error => {
+      console.error('Logout error:', error);
     });
-  }
-
-  getToken() {
-    const currentUser = auth.currentUser;
-    if (currentUser) {
-      return currentUser.getIdToken().then((token) => {
-        this.token = token;
-        return token;
-      });
-    } else {
-      return Promise.resolve(null);
-    }
   }
 
   isAuthenticated() {

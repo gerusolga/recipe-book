@@ -33,22 +33,25 @@ export class RecipeService {
     ]),
   ];
 
-  //private recipes: Recipe[] = [];
 
   constructor(private slService: ShoppingListService) {
   }
 
-  //setRecipes(recipes: Recipe[]) {
-  //this.recipes = recipes;
-  //this.recipesChanged.next(this.recipes.slice());
-  //}
+  setRecipes(recipes: Recipe[]) {
+    this.recipes = recipes;
+    this.recipesChanged.next(this.recipes.slice());
+  }
 
   getRecipes() {
-    return this.recipes.slice()
+    return this.recipes.slice();
   }
 
   getRecipe(index: number) {
     return this.recipes[index];
+  }
+
+  addIngredientsToShoppingList(ingredients: Ingredient[]) {
+    this.slService.addIngredients(ingredients);
   }
 
   addRecipe(recipe: Recipe) {
@@ -65,10 +68,6 @@ export class RecipeService {
     this.recipes.splice(index, 1);
     this.recipesChanged.next(this.recipes.slice());
   }
-  addIngredientsToList(ingredients: Ingredient[]) {
-    this.slService.addIngredients(ingredients);
-  }
 }
-
 
 

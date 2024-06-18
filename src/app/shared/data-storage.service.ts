@@ -1,27 +1,43 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Recipe} from "../recipes/recipe.model";
-import {map, Observable} from "rxjs";
+
+import {RecipeService} from "../recipes/resipe.service";
+import {AuthService} from "../auth/auth.service";
 
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 
 export class DataStorageService {
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private recipeService: RecipeService,
+              private authService: AuthService) {
   }
 
-  storeRecipes(recipes: Recipe[]): Observable<any> {
-    return this.http.put('https://recipe-book-yt-16a79-default-rtdb.europe-west1.firebasedatabase.app/recipes.json',
-      recipes);
+  storeRecipes() {
+    const token = this.authService.getToken();
+    return this.http.put('https://recipe-book-yt-16a79-default-rtdb.europe-west1.firebasedatabase.app/recipes.json' + token, this.recipeService.getRecipes());
 
   }
 
-  fetchRecipes(): Observable<Recipe[]> {
-    return this.http.get<Recipe[]>('https://recipe-book-yt-16a79-default-rtdb.europe-west1.firebasedatabase.app/recipes.')
-      .pipe(map((responseData: Recipe[])=>{
-        return responseData;
-      })
-    );
+  getRecipes() {
+    const token = this.authService.getToken();
+    this.http.get('https://recipe-book-yt-16a79-default-rtdb.europe-west1.firebasedatabase.app/recipes.' + token)
+      .token(
+        async (response: Response) => {
+          const recipes: Recipe[] = await response.json();
+          for (let recipe of recipes) {
+            if (!recipe['ingredients']) {
+              recipe['ingredients'] = [];
+            }
+          }
+          return recipes;
+        }
+      )
+      .subscribe(
+        (recipes: Recipe[]) => {
+          this.recipeService.setRecipes(recipes);
+        }
+      );
   }
-
 }

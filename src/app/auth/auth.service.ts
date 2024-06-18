@@ -45,37 +45,32 @@ export class AuthService {
     });
   }
 
-  signupUser(email: string, password: string) {
-    return createUserWithEmailAndPassword(auth, email, password)
-  .then(result => {
-      return result.user.getIdToken().then(token => {
-        this.token = token;
-        console.log('Signup successful, token:', this.token);
-        this.router.navigate(['/recipes']);
-      });
-    })
-      .catch(error => {
-        console.error('Signup error:', error);
-      });
-  }
-
-  signinUser(email: string, password: string) {
-    return signInWithEmailAndPassword(auth, email, password)
-      .then(result => {
+  signupUser(email: string, password: string): Observable<string> {
+    return from(
+      createUserWithEmailAndPassword(auth, email, password).then(result => {
         return result.user.getIdToken().then(token => {
           this.token = token;
-          console.log('Signin successful, token:', this.token);
-          this.router.navigate(['/recipes']); // Перенаправление после успешного входа
+          this.router.navigate(['/recipes']);
+          return token;
         });
       })
-      .catch(error => {
-        console.error('Signin error:', error);
-      });
+    );
+  }
+
+  signinUser(email: string, password: string): Observable<string> {
+    return from(
+      signInWithEmailAndPassword(auth, email, password).then(result => {
+        return result.user.getIdToken().then(token => {
+          this.token = token;
+          this.router.navigate(['/recipes']);
+          return token;
+        });
+      })
+    );
   }
 
   logout() {
     signOut(auth).then(() => {
-      console.log('Logged out successfully');
       this.token = null;
       this.router.navigate(['/signin']);
     }).catch(error => {
@@ -87,3 +82,4 @@ export class AuthService {
     return this.token != null;
   }
 }
+

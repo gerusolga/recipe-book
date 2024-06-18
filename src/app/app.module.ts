@@ -16,6 +16,7 @@ import {ShoppingListModule} from "./shopping-list/shopping-list.module";
 import {SharedModule} from "./shared/shared.module";
 import {CoreModule} from "./core/core.module";
 import {AuthModule} from "./auth/auth.module";
+import {AuthGuardService} from "./auth/auth-guard.service";
 
 @NgModule({
   declarations: [
@@ -38,7 +39,7 @@ import {AuthModule} from "./auth/auth.module";
     CoreModule,
     AuthModule
   ],
-  providers: [ShoppingListService, RecipeService],
+  providers: [ShoppingListService, RecipeService, AuthGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -1,28 +1,30 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NgForm} from "@angular/forms";
 import {AuthService} from "../auth.service";
-import {Router} from "@angular/router";
+
 
 @Component({
   selector: 'app-signin',
   templateUrl: './signin.component.html',
   styleUrl: './signin.component.css'
 })
-export class SigninComponent {
+export class SigninComponent implements OnInit {
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService) {
   }
-
+  ngOnInit() {
+  }
 
   onSignin(form: NgForm) {
     const email = form.value.email;
     const password = form.value.password;
-    this.authService.signinUser(email, password)
-      .then(() => {
-        console.log('Signin complete'); // Отладочное сообщение
-      })
-      .catch(error => {
+    this.authService.signinUser(email, password).subscribe(
+      token => {
+        console.log('Signin successful, token:', token);
+      },
+      error => {
         console.error('Signin error:', error);
-      });
+      }
+      );
   }
 }

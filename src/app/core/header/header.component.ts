@@ -6,7 +6,8 @@ import {Recipe} from "../../recipes/recipe.model";
 
 @Component({
   selector: 'app-header',
-  templateUrl: './header.component.html'
+  templateUrl: './header.component.html',
+  styleUrl: './header.component.css'
 })
 export class HeaderComponent {
   constructor(private dataStorageService: DataStorageService,

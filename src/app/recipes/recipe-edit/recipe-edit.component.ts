@@ -9,7 +9,7 @@ import {RecipeService} from "../resipe.service";
   styleUrl: './recipe-edit.component.css'
 })
 export class RecipeEditComponent implements OnInit {
-  id: number = 0;
+  id: number;
   editMode = false;
   recipeForm: FormGroup;
 
@@ -26,6 +26,35 @@ export class RecipeEditComponent implements OnInit {
         this.initForm();
       }
     );
+  }
+
+  onSubmit() {
+    if (this.editMode) {
+      this.recipeService.updateRecipe(this.id, this.recipeForm.value);
+    } else {
+      this.recipeService.addRecipe(this.recipeForm.value);
+    }
+    this.onCancel();
+  }
+
+  onCancel() {
+    this.router.navigate(['../'], {relativeTo: this.route})
+  }
+
+  onDeleteIngredient(index: number) {
+    (<FormArray>this.recipeForm.get('ingredients')).removeAt(index);
+  }
+
+  onAddIngredient() {
+    (<FormArray>this.recipeForm.get('ingredients')).push(
+      new FormGroup({
+        'name': new FormControl(null, Validators.required),
+        'amount': new FormControl(null, [
+          Validators.required,
+          Validators.pattern(/^[1-9]+[0-9]*$/)
+        ])
+      })
+    )
   }
 
   private initForm() {
@@ -62,34 +91,7 @@ export class RecipeEditComponent implements OnInit {
     })
   }
 
-  get controls() {
+  getControls() {
     return (<FormArray>this.recipeForm.get('ingredients')).controls;
-  }
-
-  onSubmit() {
-    if (this.editMode) {
-      this.recipeService.updateRecipe(this.id, this.recipeForm.value);
-    } else {
-      this.recipeService.addRecipe(this.recipeForm.value);
-    }
-    this.onCancel();
-  }
-onCancel(){
-    this.router.navigate(['../'], {relativeTo: this.route })
-}
-  onDeleteIngredient(index: number){
-    (<FormArray>this.recipeForm.get('ingredients')).removeAt(index);
-  }
-
-  onAddIngredient() {
-    (<FormArray>this.recipeForm.get('ingredients')).push(
-      new FormGroup({
-        'name': new FormControl(null, Validators.required),
-        'amount': new FormControl(null, [
-          Validators.required,
-          Validators.pattern(/^[1-9]+[0-9]*$/)
-        ])
-      })
-    )
   }
 }
